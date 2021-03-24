@@ -1,0 +1,28 @@
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import JavniPoziv from "./JavniPoziv";
+import ResenjeOFK from "./ResenjeOFK";
+import TehnickaDokumentacija from "./TehnickaDokumentacija";
+
+@Entity()
+export default class KonkursnaDokumentacija {
+
+
+    @PrimaryGeneratedColumn()
+    sifraKD: number;
+
+    @Column()
+    rok: Date;
+
+
+    @Column()
+    obavezanElement: string;
+
+    @ManyToOne(type => TehnickaDokumentacija, { eager: true })
+    sadrzi: TehnickaDokumentacija;
+
+    @ManyToOne(type => JavniPoziv, (j) => j.konkursneDokumentacija, { eager: true, onDelete: 'CASCADE', primary: true })
+    javniPoziv: JavniPoziv;
+
+    @ManyToOne(type => ResenjeOFK, { eager: true })
+    resenje: ResenjeOFK;
+}
