@@ -16,6 +16,8 @@ export default class JavniPoziv {
     @Column()
     sabloni: string;
 
+    @Column()
+    status: 'kreiran' | 'izmenjen' | 'poslat'
 
     @ManyToOne(type => Radnik, { eager: true })
     ima: Radnik
