@@ -5,7 +5,7 @@
    "username": "root",
    "password": "",
    "database": "milan",
-   "synchronize": true,
+   "synchronize": false,
    "logging": true,
    "entities": [
       "src/entity/**/*.ts"

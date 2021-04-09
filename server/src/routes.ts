@@ -118,6 +118,12 @@ export const Routes: Route[] = [
         method: 'get',
         controller: TDController,
         action: 'all'
+    },
+    {
+        route: '/posalji/:id',
+        method: 'patch',
+        action: 'posalji',
+        controller: JavniPozivController
     }
 
 ];

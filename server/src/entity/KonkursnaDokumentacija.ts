@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import JavniPoziv from "./JavniPoziv";
+import NacinDostavljanjaPonude from "./NacinDostavljanjaPonude";
 import ResenjeOFK from "./ResenjeOFK";
 import TehnickaDokumentacija from "./TehnickaDokumentacija";
 
@@ -25,4 +26,7 @@ export default class KonkursnaDokumentacija {
 
     @ManyToOne(type => ResenjeOFK, { eager: true })
     resenje: ResenjeOFK;
+
+    @OneToMany(type => NacinDostavljanjaPonude, n => n.dokumentacija, { eager: false })
+    nacini: NacinDostavljanjaPonude[];
 }
