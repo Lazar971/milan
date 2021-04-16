@@ -12,6 +12,9 @@ function App() {
       <Navbar />
 
       <Switch>
+        <Route path='/javniPoziv/kreiraj'>
+
+        </Route>
         <Route path='/javniPoziv'>
           <JavniPozivPage ></JavniPozivPage>
         </Route>

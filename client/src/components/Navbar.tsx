@@ -17,6 +17,9 @@ export default function Navbar() {
             <Menu.Item as={Link} to='/javniPoziv'>
                 Javni poziv
            </Menu.Item>
+            <Menu.Item as={Link} to='/javniPoziv/kreiraj'>
+                Kreiraj javni poziv
+           </Menu.Item>
         </Menu>
     )
 }

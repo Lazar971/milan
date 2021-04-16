@@ -21,7 +21,7 @@ export default class RadnikController {
     }
     async create(req: Request, res: Response) {
         const data = req.body;
-        const insertResult = await this.radnikRepository.insert(data);
+        const insertResult = await this.radnikRepository.insert({ ...data, status: 'u izradi' });
         const id = insertResult.identifiers[0].sifraRadnika;
         return await this.radnikRepository.findOne(id);
 
@@ -35,7 +35,7 @@ export default class RadnikController {
             res.sendStatus(404);
             return undefined;
         }
-        await this.radnikRepository.update(id, data);
+        await this.radnikRepository.update(id, { ...data, status: 'aktivan' });
         return await this.radnikRepository.findOne(id);
 
     }

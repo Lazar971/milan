@@ -1,11 +1,14 @@
 import React from 'react'
-import { Table } from 'semantic-ui-react'
+import { Button, Table } from 'semantic-ui-react'
 import { Radnik } from '../model'
 
 interface Props {
     radnici: Radnik[],
     activeIndex: number,
-    onRowClick: (index: number) => void
+    onRowClick: (index: number) => void,
+    onDelete: (id: number) => void,
+    onDetail: (ind: number) => void
+
 }
 
 export default function RadnikTabela(props: Props) {
@@ -19,6 +22,8 @@ export default function RadnikTabela(props: Props) {
                     <Table.HeaderCell>Status</Table.HeaderCell>
                     <Table.HeaderCell>Radi</Table.HeaderCell>
                     <Table.HeaderCell>Pripada</Table.HeaderCell>
+                    <Table.HeaderCell>Detalji</Table.HeaderCell>
+                    <Table.HeaderCell>Obrisi</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -34,6 +39,18 @@ export default function RadnikTabela(props: Props) {
                                 <Table.Cell>{element.status}</Table.Cell>
                                 <Table.Cell>{element.radi.naziv}</Table.Cell>
                                 <Table.Cell>{element.pripada.naziv}</Table.Cell>
+                                <Table.Cell>
+                                    <Button positive onClick={() => {
+                                        props.onDetail(index)
+                                    }}>
+                                        Vidi
+                                    </Button>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <Button circular negative icon='x' onClick={() => {
+                                        props.onDelete(element.sifraRadnika);
+                                    }}></Button>
+                                </Table.Cell>
                             </Table.Row>
                         )
                     })
