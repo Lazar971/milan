@@ -30,7 +30,9 @@ createConnection().then(async connection => {
     // ...
 
     // start express server
-    app.listen(4000);
+    app.listen(4000, () => {
+        console.log('app is listening on http://localhost:4000')
+    });
 
     // insert new users for test
 

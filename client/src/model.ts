@@ -67,6 +67,7 @@ export interface KonkursnaDokumentacija {
     rok: Date,
     obavezanElement: string,
     sadrzi: TehnickaDokumentacija,
+    obrisan?: boolean,
     javniPoziv: JavniPoziv,
     resenje: ResenjeOFK,
     nacini: NacinDostavljanjaPonude[]
@@ -75,6 +76,7 @@ export interface NacinDostavljanjaPonude {
     rb: number,
     adresa: string,
     opis: string,
+    obrisan?: boolean,
     dokumentacija: KonkursnaDokumentacija
 }
 export interface Prima {

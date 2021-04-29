@@ -37,17 +37,22 @@ export default function JavniPozivPage() {
                             <Table.Cell>{element.sadrzi.naziv}</Table.Cell>
                             <Table.Cell>{element.resenje.predlog.sifraPPP + ';' + element.resenje.radnik.ime + ' ' + element.resenje.radnik.prezime + ';' + (element.resenje.datumRPP as any).substring(0, 10)}</Table.Cell>
                             <Table.Cell >
-                                <Link to='/jp'>
+                                <Link to={'/javniPoziv/' + element.idJavnogPoziva}>
                                     Vidi
                                 </Link>
                             </Table.Cell>
                             <Table.Cell >
-                                <Link to='/jp'>
+                                <Link to={'/javniPoziv/' + element.idJavnogPoziva + '/izmeni'}>
                                     Izmeni
                                 </Link>
                             </Table.Cell>
                             <Table.Cell>
-                                <Button negative>
+                                <Button negative onClick={async () => {
+                                    await JPService.obrisiJP(element.idJavnogPoziva);
+                                    setJavniPozivi(prev => {
+                                        return prev.filter(jp => jp.idJavnogPoziva !== element.idJavnogPoziva)
+                                    })
+                                }}>
                                     Obrisi
                                 </Button>
                             </Table.Cell>

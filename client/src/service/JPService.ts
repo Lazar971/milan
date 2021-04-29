@@ -11,6 +11,9 @@ export class JPService {
         return result.data;
 
     }
+    async obrisiJP(id: number): Promise<void> {
+        await axios.delete(SERVER_URL + '/javniPoziv/' + id)
+    }
 
 }
 
