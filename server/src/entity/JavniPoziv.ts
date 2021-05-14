@@ -25,7 +25,7 @@ export default class JavniPoziv {
     @ManyToOne(type => KriterijumIzbora, { eager: true })
     sadrzi: KriterijumIzbora;
 
-    @OneToMany(type => KonkursnaDokumentacija, (k) => k.javniPoziv)
+    @OneToMany(type => KonkursnaDokumentacija, (k) => k.javniPoziv, { primary: true })
     konkursneDokumentacija: KonkursnaDokumentacija[];
 
     @ManyToOne(type => ResenjeOPP, { eager: true })

@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Button, DropdownItemProps, Form, Grid } from 'semantic-ui-react'
-import { KonkursnaDokumentacija, KriterijumIzbora, Radnik, ResenjeOPP } from '../model';
+import { JavniPoziv, KonkursnaDokumentacija, KriterijumIzbora, Radnik, ResenjeOPP } from '../model';
 import radnikService from '../service/RadnikService'
 import kriterijumService from '../service/KriterijumService'
 import resenjeOPPService from '../service/ResenjeOPPService';
 import KonkursnaDokumentacijaTabela from './KonkursnaDokumentacijaTabela';
 import KonkurnsaDokumentacijaModal from './KonkurnsaDokumentacijaModal';
-export default function JPForma() {
+interface Props {
+
+    onSubmit: (jp: Partial<JavniPoziv>) => Promise<any>
+}
+
+export default function JPForma(props: Props) {
 
 
     const [radnici, setRadnici] = useState<Radnik[]>([]);
@@ -102,7 +107,18 @@ export default function JPForma() {
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-                <Button primary>Sacuvaj</Button>
+                <Button primary onClick={() => {
+                    props.onSubmit({
+                        datum: new Date(datum),
+                        ima: (selKriterijumIndex > -1) ? radnici[selRadnikIndex] : undefined,
+                        konkursneDokumentacija: konkursneDokumentacije,
+                        sabloni: sabloni,
+                        resenje: (selResenjeIndex > -1) ? resenja[selResenjeIndex] : undefined,
+                        sadrzi: (selKriterijumIndex > -1) ? kriterijumi[selKriterijumIndex] : undefined
+                    }).then(val => {
+                        alert(val);
+                    })
+                }}>Sacuvaj</Button>
             </Grid.Row>
 
         </Grid>

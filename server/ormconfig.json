@@ -4,9 +4,9 @@
    "port": 3306,
    "username": "root",
    "password": "",
-   "database": "milan",
+   "database": "milan2",
    "synchronize": false,
-   "logging": false,
+   "logging": true,
    "entities": [
       "src/entity/**/*.ts"
    ],

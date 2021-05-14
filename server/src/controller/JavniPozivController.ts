@@ -53,28 +53,14 @@ export default class JavniPozivController {
 
         const data = req.body;
 
-        const datum = new Date(data.datum);
-        const sabloni = data.sabloni;
-        //id radnika
-        const ima = data.radnik;
-        //id kriterijuma
-        const sadrzi = data.sadrzi;
-        //objekat sa atributima: datumRPP, radnik(id radnika), predlog(id predloga)
-        const resenje = data.resenje;
 
 
         const dokumentacije = data.konkursneDokumentacija;
 
         const javniPoziv = this.manager.transaction(async (manager) => {
 
-            const jp = await manager.save(JavniPoziv, {
-                datum: datum,
-                ima: ima,
-                resenje: resenje,
-                sadrzi: sadrzi,
-                status: 'kreiran',
-                sabloni: sabloni
-            }) as JavniPoziv;
+            const jp = await manager.save(JavniPoziv, data) as JavniPoziv;
+            console.log('save jp')
             for (let dok of dokumentacije) {
                 const rok = dok.rok;
                 const obavezanElement = dok.obavezanElement;
@@ -82,18 +68,25 @@ export default class JavniPozivController {
                 const resenje = dok.resenje;
 
                 const dokumentacija = await manager.save(KonkursnaDokumentacija, {
-                    javniPoziv: jp.idJavnogPoziva as any,
+                    javniPoziv: {
+                        idJavnogPoziva: jp.idJavnogPoziva
+                    },
                     rok: rok,
                     obavezanElement: obavezanElement,
                     sadrzi: sadrzi,
                     resenje: resenje
-                });
+                }) as any;
+                console.log(jp.idJavnogPoziva);
+                console.log(dokumentacija.sifraKD)
                 for (let nacin of dok.nacini) {
-                    await manager.save(NacinDostavljanjaPonude, {
+                    /* await manager.save(NacinDostavljanjaPonude, {
                         adresa: nacin.adresa,
                         opis: nacin.opis,
                         dokumentacija: dokumentacija
-                    })
+                    }) */
+                    await manager.query(`INSERT INTO nacin_dostavljanja_ponude (adresa,opis,dokumentacijaSifraKD,javniPozivId) VALUES (?,?,?,?)`, [
+                        nacin.adresa, nacin.opis, dokumentacija.sifraKD, jp.idJavnogPoziva
+                    ])
                 }
 
             }
@@ -143,9 +136,7 @@ export default class JavniPozivController {
                 if (obrisana) {
                     manager.delete(KonkursnaDokumentacija, {
                         sifraKD: dok.sifraKD,
-                        javniPoziv: {
-                            idJavnogPoziva: jp.idJavnogPoziva
-                        }
+                        javniPoziv: jp
                     } as FindConditions<KonkursnaDokumentacija>)
                 } else {
                     let dokumentacija: Partial<KonkursnaDokumentacija>;
@@ -154,9 +145,7 @@ export default class JavniPozivController {
                         const dok1 = await manager.findOne(KonkursnaDokumentacija, {
                             where: {
                                 sifraKD: dok.sifraKD,
-                                javniPoziv: {
-                                    idJavnogPoziva: jp.idJavnogPoziva
-                                }
+                                javniPoziv: jp
                             }
                         });
                         dokumentacija = await manager.save(KonkursnaDokumentacija, { ...dok1, ...dok });
