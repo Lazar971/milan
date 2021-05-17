@@ -32,7 +32,21 @@ export default class JavniPozivController {
                 }
             }
         });
-        jp.konkursneDokumentacija = dok;
+
+        const noveDokumentacije = await Promise.all(dok.map(async element => {
+            element.javniPoziv = undefined;
+            const result = await getManager().query('SELECT rb, adresa, opis FROM nacin_dostavljanja_ponude WHERE dokumentacijaSifraKD=? AND javniPozivId=?', [element.sifraKD, jp.idJavnogPoziva]);
+            element.nacini = result.map((res: any) => {
+                return {
+                    adresa: res.adresa,
+                    opis: res.opis,
+                    rb: res.rb
+                }
+            });
+            return element;
+        }))
+        jp.konkursneDokumentacija = noveDokumentacije;
+        res.json(jp);
 
     }
 
@@ -59,8 +73,10 @@ export default class JavniPozivController {
 
         const javniPoziv = this.manager.transaction(async (manager) => {
 
-            const jp = await manager.save(JavniPoziv, data) as JavniPoziv;
-            console.log('save jp')
+            const jp = await manager.save(JavniPoziv, {
+                ...data,
+                status: 'kreiran'
+            }) as JavniPoziv;
             for (let dok of dokumentacije) {
                 const rok = dok.rok;
                 const obavezanElement = dok.obavezanElement;
@@ -119,7 +135,7 @@ export default class JavniPozivController {
 
         const javniPoziv = this.manager.transaction(async (manager) => {
 
-
+            console.log('saving jp');
             const jp = await manager.save(JavniPoziv, {
                 idJavnogPoziva: jp1.idJavnogPoziva,
                 datum: datum || jp1.datum,
@@ -130,57 +146,60 @@ export default class JavniPozivController {
                 sabloni: sabloni || jp1.sabloni,
 
             } as JavniPoziv) as JavniPoziv;
+            console.log('saved jp');
             for (let dok of dokumentacije) {
 
-                const obrisana = dok.obrisana;
-                if (obrisana) {
-                    manager.delete(KonkursnaDokumentacija, {
+                const obrisan = dok.obrisan;
+                if (obrisan) {
+                    console.log('brisanje dok');
+                    console.log(dok.sifraKD);
+                    console.log(jp1.idJavnogPoziva);
+                    await manager.delete(KonkursnaDokumentacija, {
                         sifraKD: dok.sifraKD,
-                        javniPoziv: jp
+                        javniPoziv: {
+                            idJavnogPoziva: jp1.idJavnogPoziva
+                        }
                     } as FindConditions<KonkursnaDokumentacija>)
                 } else {
                     let dokumentacija: Partial<KonkursnaDokumentacija>;
-                    if (dok.sifraKD) {
 
-                        const dok1 = await manager.findOne(KonkursnaDokumentacija, {
-                            where: {
-                                sifraKD: dok.sifraKD,
-                                javniPoziv: jp
-                            }
-                        });
-                        dokumentacija = await manager.save(KonkursnaDokumentacija, { ...dok1, ...dok });
 
-                    } else {
-                        const rok = dok.rok;
-                        const obavezanElement = dok.obavezanElement;
-                        const sadrzi = dok.sadrzi;
-                        const resenje = dok.resenje;
+                    const { nacini, ...rest } = dok;
 
-                        dokumentacija = await manager.save(KonkursnaDokumentacija, {
-                            javniPoziv: jp.idJavnogPoziva as any,
-                            rok: rok,
-                            obavezanElement: obavezanElement,
-                            sadrzi: sadrzi,
-                            resenje: resenje
-                        })
-                    }
+
+                    dokumentacija = await manager.save(KonkursnaDokumentacija, { ...rest, javniPoziv: jp });
+
+
                     for (let nacinData of dok.nacini) {
                         if (nacinData.obrisan) {
-                            await manager.delete(NacinDostavljanjaPonude, {
-                                rb: nacinData.rb,
-                                dokumentacija: dokumentacija
-                            })
+                            await manager.query('DELETE FROM nacin_dostavljanja_ponude WHERE rb=? AND dokumentacijaSifraKD=? AND javniPozivId=?', [
+                                nacinData.rb,
+                                dokumentacija.sifraKD,
+                                jp.idJavnogPoziva
+                            ])
                         } else {
                             if (nacinData.rb) {
-                                const nacin = await manager.findOne(NacinDostavljanjaPonude, {
-                                    where: {
-                                        rb: nacinData.rb,
-                                        dokumentacija: dokumentacija
-                                    }
-                                });
-                                await manager.save(NacinDostavljanjaPonude, { ...nacin, ...nacinData });
+
+                                let s = '';
+                                let niz = [];
+                                if (nacinData.adresa) {
+                                    s = 'adresa = ?';
+                                    niz.push(nacinData.adresa);
+                                }
+                                if (nacinData.opis) {
+                                    s = s + ((nacinData.adresa) ? ', ' : '') + 'opis = ?';
+                                    niz.push(nacinData.opis);
+                                }
+                                s = 'UPDATE nacin_dostavljanja_ponude SET ' + s + ' WHERE rb=? AND dokumentacijaSifraKD=? AND javniPozivId=?';
+
+                                if (s !== '') {
+                                    await manager.query(s, [...niz, nacinData.rb, dokumentacija.sifraKD, jp.idJavnogPoziva]);
+                                }
                             } else {
-                                await manager.save(NacinDostavljanjaPonude, { ...nacinData, dokumentacija: dokumentacija });
+
+                                await manager.query('INSERT INTO nacin_dostavljanja_ponude(adresa,opis,dokumentacijaSifraKD,javniPozivId) VALUES (?,?,?,?)', [
+                                    nacinData.adresa, nacinData.opis, dokumentacija.sifraKD, jp.idJavnogPoziva
+                                ])
                             }
 
                         }

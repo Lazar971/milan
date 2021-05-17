@@ -7,7 +7,8 @@ interface Props {
     onKreiraj: () => void,
     selDokumentacija?: KonkursnaDokumentacija,
     onRowSelect: (dok: KonkursnaDokumentacija | undefined) => void,
-    onDelete: (dok: KonkursnaDokumentacija) => void
+    onDelete: (dok: KonkursnaDokumentacija) => void,
+    prikaz?: boolean,
 }
 export default function KonkursnaDokumentacijaTabela(props: Props) {
     return (
@@ -22,7 +23,13 @@ export default function KonkursnaDokumentacijaTabela(props: Props) {
                         <Table.HeaderCell>Tehnicka dokumentacija </Table.HeaderCell>
                         <Table.HeaderCell>Resenje OFK </Table.HeaderCell>
                         <Table.HeaderCell>
-                            <Button onClick={props.onKreiraj} primary fluid>{props.selDokumentacija ? 'Izmeni' : 'Kreiraj'}</Button>
+                            {
+                                props.prikaz ? (
+                                    props.selDokumentacija && (<Button onClick={props.onKreiraj}>Prikazi</Button>)
+                                ) : (
+                                    <Button onClick={props.onKreiraj} primary fluid>{props.selDokumentacija ? 'Izmeni' : 'Kreiraj'}</Button>
+                                )
+                            }
                         </Table.HeaderCell>
                     </Table.Row>
 
@@ -43,11 +50,16 @@ export default function KonkursnaDokumentacijaTabela(props: Props) {
                                     <Table.Cell>{element.obavezanElement}</Table.Cell>
                                     <Table.Cell>{element.sadrzi.opis}</Table.Cell>
                                     <Table.Cell>{element.resenje.potpis}</Table.Cell>
-                                    <Table.Cell>
-                                        <Button circular negative icon='x' onClick={() => {
-                                            props.onDelete(element);
-                                        }}></Button>
-                                    </Table.Cell>
+                                    {
+                                        !props.prikaz && (
+                                            <Table.Cell>
+                                                <Button circular negative icon='x' onClick={() => {
+                                                    props.onRowSelect(undefined);
+                                                    props.onDelete(element);
+                                                }}></Button>
+                                            </Table.Cell>
+                                        )
+                                    }
                                 </Table.Row>
                             )
                         })

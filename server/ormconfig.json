@@ -6,7 +6,7 @@
    "password": "",
    "database": "milan2",
    "synchronize": false,
-   "logging": true,
+   "logging": false,
    "entities": [
       "src/entity/**/*.ts"
    ],

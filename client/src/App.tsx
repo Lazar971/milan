@@ -6,6 +6,8 @@ import JavniPozivPage from './pages/JavniPozivPage';
 import RadnikPage from './pages/RadnikPage';
 import HomePage from './pages/HomePage';
 import KreirajJPPage from './pages/KreirajJPPage';
+import IzmeniJavniPozivPage from './pages/IzmeniJavniPozivPage';
+import PregledJavnogPoziva from './pages/PregledJavnogPoziva';
 
 function App() {
   return (
@@ -18,10 +20,10 @@ function App() {
           <KreirajJPPage />
         </Route>
         <Route path='/javniPoziv/:id/izmeni'>
-
+          <IzmeniJavniPozivPage />
         </Route>
         <Route path='/javniPoziv/:id'>
-
+          <PregledJavnogPoziva />
         </Route>
 
         <Route path='/javniPoziv'>

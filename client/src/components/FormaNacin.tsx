@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from 'semantic-ui-react'
 import { NacinDostavljanjaPonude } from '../model'
 
 
 interface Props {
-    onSubmit: (nacin: Partial<NacinDostavljanjaPonude>) => void
+    onSubmit: (nacin: Partial<NacinDostavljanjaPonude>) => void,
+    nacin?: NacinDostavljanjaPonude
 }
 
 
@@ -13,6 +14,10 @@ export default function FormaNacin(props: Props) {
     const [adresa, setAdresa] = useState('');
     const [opis, setOpis] = useState('')
 
+    useEffect(() => {
+        setAdresa(props.nacin?.adresa || '');
+        setOpis(props.nacin?.opis || '');
+    }, [props.nacin])
 
     return (
         <Form onSubmit={() => {
