@@ -37,12 +37,16 @@ CREATE TABLE `javni_poziv` (
   CONSTRAINT `FK_1a44d5d3abee6b85465f02984ed` FOREIGN KEY (`resenjeDatumRPP`, `resenjeRadnik`, `resenjePredlog`) REFERENCES `resenje_opp` (`datumRPP`, `radnikSifraRadnika`, `predlogSifraPPP`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_88ce540a0b7db07597e00b750a5` FOREIGN KEY (`sadrziIdKriterijuma`) REFERENCES `kriterijum_izbora` (`idKriterijuma`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_c66fc96ff5a4831622ce6904ee9` FOREIGN KEY (`imaSifraRadnika`) REFERENCES `radnik` (`sifraRadnika`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `javni_poziv` */
 
 insert  into `javni_poziv`(`idJavnogPoziva`,`datum`,`sabloni`,`status`,`imaSifraRadnika`,`sadrziIdKriterijuma`,`resenjeDatumRPP`,`resenjeRadnik`,`resenjePredlog`) values 
-(8,'2021-05-06 02:00:00','adfdg','',1,2,'2021-04-20 15:06:17',1,1);
+(8,'2021-05-06 02:00:00','1afd\\f','izmenjen',1,3,'2021-04-20 15:06:17',1,1),
+(16,'2021-05-06 02:00:00','izmena','izmenjen',1,3,'2021-04-20 15:06:17',1,1),
+(17,'2021-05-06 02:00:00','izmena','izmenjen',1,3,'2021-04-20 15:06:17',1,1),
+(18,'2021-05-06 02:00:00','izmena','izmenjen',1,3,'2021-04-20 15:06:17',1,1),
+(19,'2021-05-20 02:00:00','novi','kreiran',1,2,'2021-04-20 15:06:17',1,1);
 
 /*Table structure for table `konkursna_dokumentacija` */
 
@@ -64,13 +68,21 @@ CREATE TABLE `konkursna_dokumentacija` (
   CONSTRAINT `FK_82c108a828f034c997b9703e852` FOREIGN KEY (`resenjeDatumRFK`, `resenjeRadnik`, `resenjePredlog`) REFERENCES `resenje_ofk` (`datumRFK`, `radnikSifraRadnika`, `predlogSifraPFK`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_c2a044b7e64c965070203d91519` FOREIGN KEY (`javniPozivIdJavnogPoziva`) REFERENCES `javni_poziv` (`idJavnogPoziva`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_df6abe8e3f97f3775321b123333` FOREIGN KEY (`sadrziIdTD`) REFERENCES `tehnicka_dokumentacija` (`idTD`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `konkursna_dokumentacija` */
 
 insert  into `konkursna_dokumentacija`(`sifraKD`,`rok`,`obavezanElement`,`sadrziIdTD`,`javniPozivIdJavnogPoziva`,`resenjeDatumRFK`,`resenjeRadnik`,`resenjePredlog`) values 
-(8,'2021-05-11 02:00:00','afdsg',2,8,NULL,1,1),
-(9,'2021-05-11 02:00:00','afdsgafds',1,8,NULL,1,1);
+(8,'2021-05-11 02:00:00','afdsg',2,8,'1970-01-22 14:19:58',1,1),
+(8,'2021-05-11 02:00:00','afdsg',2,16,'1970-01-22 14:19:58',1,1),
+(8,'2021-05-11 02:00:00','afdsg',2,17,'1970-01-22 14:19:58',1,1),
+(8,'2021-05-11 02:00:00','afdsg',2,18,'1970-01-22 14:19:58',1,1),
+(9,'2021-05-11 02:00:00','afdsgafds',1,16,'1970-01-22 14:19:58',1,1),
+(9,'2021-05-11 02:00:00','afdsgafds',1,17,'1970-01-22 14:19:58',1,1),
+(12,'2021-05-11 02:00:00','afdsgafdsadsfdgh',2,17,'1970-01-11 14:20:01',1,2),
+(14,'2021-05-11 02:00:00','afdsgfeatdhyrukilo;',1,8,'1970-01-22 14:19:58',1,1),
+(15,'2021-05-11 02:00:00','afdsgfeatdhyrukilo;',1,8,'1970-01-22 14:19:58',1,1),
+(19,'2021-05-05 02:00:00','DAF',1,19,'1970-01-22 14:19:58',1,1);
 
 /*Table structure for table `kriterijum_izbora` */
 
@@ -100,16 +112,20 @@ CREATE TABLE `nacin_dostavljanja_ponude` (
   `dokumentacijaSifraKD` int(11) NOT NULL,
   `javniPozivId` int(11) NOT NULL,
   PRIMARY KEY (`rb`,`dokumentacijaSifraKD`,`javniPozivId`),
-  KEY `dokumentacijaSifraKD` (`dokumentacijaSifraKD`,`javniPozivId`),
-  CONSTRAINT `nacin_dostavljanja_ponude_ibfk_1` FOREIGN KEY (`dokumentacijaSifraKD`, `javniPozivId`) REFERENCES `konkursna_dokumentacija` (`sifraKD`, `javniPozivIdJavnogPoziva`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+  KEY `nacin_dostavljanja_ponude_ibfk_1` (`dokumentacijaSifraKD`,`javniPozivId`),
+  CONSTRAINT `nacin_dostavljanja_ponude_ibfk_1` FOREIGN KEY (`dokumentacijaSifraKD`, `javniPozivId`) REFERENCES `konkursna_dokumentacija` (`sifraKD`, `javniPozivIdJavnogPoziva`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `nacin_dostavljanja_ponude` */
 
 insert  into `nacin_dostavljanja_ponude`(`rb`,`adresa`,`opis`,`dokumentacijaSifraKD`,`javniPozivId`) values 
-(1,'afdg','afdsg',8,8),
-(2,'afdgafd','afdsgafdsf',8,8),
-(3,'afdg','afdsg',9,8);
+(1,'afdgafesgrhtdyrjtukyil','afdsg',8,8),
+(4,'adsfsg','afsdsf',12,17),
+(5,'adsfsgafd','afsdsfafdsf',12,17),
+(8,'afe','aefsg',14,8),
+(9,'afe','aefsg',15,8),
+(13,'sfdsg','sfd',8,8),
+(14,'dfa','afsdg',19,19);
 
 /*Table structure for table `organizaciona_jedinica` */
 
@@ -235,8 +251,8 @@ CREATE TABLE `resenje_ofk` (
 /*Data for the table `resenje_ofk` */
 
 insert  into `resenje_ofk`(`datumRFK`,`potpis`,`radnikSifraRadnika`,`predlogSifraPFK`) values 
-('0000-00-00 00:00:00','potpis2',1,1),
-('0000-00-00 00:00:00','potpis1',1,2);
+('1970-01-11 14:20:01','potpis1',1,2),
+('1970-01-22 14:19:58','potpis2',1,1);
 
 /*Table structure for table `resenje_opp` */
 
